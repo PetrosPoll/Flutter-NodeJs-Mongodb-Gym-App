@@ -63,6 +63,10 @@ class _CalendarState extends State<Calendar> {
 
     // Receive data from the state and handle them
     if (state is CalendarReceiveData) {
+      DateTime now = DateTime.now();
+      DateTime formattedDateTime = DateTime.utc(now.year, now.month, now.day);
+      String formattedString = formattedDateTime.toUtc().toIso8601String();
+
       // Get the data from the state with the getters
       String exerciseName = state.getExerciseName;
       bool isNewEvent = state.getIsNewEvent;
@@ -70,7 +74,7 @@ class _CalendarState extends State<Calendar> {
           selectedEvents[selectedDay] = [
             Event(title: exerciseName)
           ];
-          BlocProvider.of<CalendarManageBloc>(context).add(SaveSet(false, 'pollakis.p6@gmail.com', '23', '54', '2023-07-02 00:00:00.000Z', exerciseName));
+          BlocProvider.of<CalendarManageBloc>(context).add(SaveSet(false, 'pollakis.p6@gmail.com', '23', '54', formattedString, exerciseName));
         }
     }
     return Scaffold(
