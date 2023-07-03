@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/calendar_manage_bloc.dart';
 import 'bloc/calendar_manage_event.dart';
 import 'bloc/calendar_manage_state.dart';
+import 'package:intl/intl.dart';
 
 class Calendar extends StatefulWidget {
   @override
@@ -17,10 +18,12 @@ class _CalendarState extends State<Calendar> {
   DateTime selectedDay = DateTime.now();
   DateTime focusedDay = DateTime.now();
   TextEditingController _eventController = TextEditingController();
+  List<dynamic> list_of_sets = [];
 
   @override
   void initState() {
     selectedEvents = {};
+    BlocProvider.of<CalendarManageBloc>(context).add(ReceiveListOfSets('pollakis.p6@gmail.com'));
     super.initState();
   }
 
@@ -40,8 +43,24 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CalendarManageBloc, CalendarManageState>(
+  return BlocBuilder<CalendarManageBloc, CalendarManageState>(
   builder: (context, state) {
+    if (state is ListOfSetsState) {
+      selectedEvents = {};
+      list_of_sets = state.getListOfSets;
+
+    for (int i = 0; i < list_of_sets.length; i++) {
+      var object = list_of_sets[i];
+      String dateString = object["date"];
+      DateTime date = DateTime.parse(dateString);
+        if (selectedEvents[selectedDay] != null) {
+            selectedEvents[date]?.add( Event(title: object["exercise_name"]) );
+        } else {
+          selectedEvents[date] = [ Event(title: object["exercise_name"]) ];
+      }
+    }
+    }
+
     // Receive data from the state and handle them
     if (state is CalendarReceiveData) {
       // Get the data from the state with the getters
@@ -51,8 +70,7 @@ class _CalendarState extends State<Calendar> {
           selectedEvents[selectedDay] = [
             Event(title: exerciseName)
           ];
-          print('Save new event - Calendar.dart');
-          BlocProvider.of<CalendarManageBloc>(context).add(SaveSet(false, 'pollakis.p6@gmail.com', '23', '54', '2023-06-29T02:25:34.639+00:00', exerciseName));
+          BlocProvider.of<CalendarManageBloc>(context).add(SaveSet(false, 'pollakis.p6@gmail.com', '23', '54', '2023-07-02 00:00:00.000Z', exerciseName));
         }
     }
     return Scaffold(
@@ -77,49 +95,11 @@ class _CalendarState extends State<Calendar> {
                 selectedDay = selectDay;
                 focusedDay = focusDay;
               });
-              print(focusedDay);
             },
             selectedDayPredicate: (DateTime date) {
               return isSameDay(selectedDay, date);
             },
-
             eventLoader: _getEventsfromDay,
-
-            //To style the Calendar
-            calendarStyle: CalendarStyle(
-              isTodayHighlighted: true,
-              selectedDecoration: BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              selectedTextStyle: TextStyle(color: Colors.white),
-              todayDecoration: BoxDecoration(
-                color: Colors.purpleAccent,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              defaultDecoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              weekendDecoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-            ),
-            headerStyle: HeaderStyle(
-              formatButtonVisible: true,
-              titleCentered: true,
-              formatButtonShowsNext: false,
-              formatButtonDecoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              formatButtonTextStyle: TextStyle(
-                color: Colors.white,
-              ),
-            ),
           ),
           ..._getEventsfromDay(selectedDay).map(
             (Event event) => ListTile(
@@ -149,16 +129,15 @@ class _CalendarState extends State<Calendar> {
                   if (_eventController.text.isEmpty) {
 
                   } else {
-                    if (selectedEvents[selectedDay] != null) {
-                      selectedEvents[selectedDay]?.add(
-                        Event(title: _eventController.text),
-                      );
-                    } else {
-                      selectedEvents[selectedDay] = [
-                        Event(title: _eventController.text)
-                      ];
-                    }
-
+                      if (selectedEvents[selectedDay] != null) {
+                        selectedEvents[selectedDay]?.add(
+                          Event(title: _eventController.text),
+                        );
+                      } else {
+                        selectedEvents[selectedDay] = [
+                          Event(title: _eventController.text)
+                        ];
+                      }
                   }
                   Navigator.pop(context);
                   _eventController.clear();

@@ -5,6 +5,12 @@ import 'package:meta/meta.dart';
 @immutable
 abstract class CalendarManageEvent {}
 
+class ReceiveListOfSets extends CalendarManageEvent {
+  final String username;
+
+  ReceiveListOfSets(this.username);
+}
+
 class AddAnEvent extends CalendarManageEvent {
   final String exerciseName;
   final bool isNewEvent;

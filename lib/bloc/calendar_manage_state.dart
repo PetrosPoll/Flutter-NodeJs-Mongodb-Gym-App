@@ -15,3 +15,11 @@ class CalendarReceiveData extends CalendarManageState {
 
   CalendarReceiveData(this.exerciseName, this.isNewEvent);
 }
+
+class ListOfSetsState extends CalendarManageState {
+ final List<dynamic> listOfSets;
+ 
+  List<dynamic> get getListOfSets => listOfSets;
+
+  ListOfSetsState(this.listOfSets);
+}
