@@ -13,6 +13,8 @@ class ReceiveListOfSets extends CalendarManageEvent {
 
 class AddAnEvent extends CalendarManageEvent {
   final String exerciseName;
+  // final String reps;
+  // final String weight;
   final bool isNewEvent;
 
   AddAnEvent(this.exerciseName, this.isNewEvent);

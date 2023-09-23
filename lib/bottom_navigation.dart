@@ -22,7 +22,8 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My App'),
+        title: Text('GYM APP'),
+        backgroundColor: Colors.red, // Set the color of the AppBar
       ),
       body: IndexedStack(
         index: _selectedIndex,
@@ -35,15 +36,15 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.fitness_center),
             label: 'Exercises',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.calendar_today),
             label: 'History',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.timer),
             label: 'Countdown',
           ),
         ],

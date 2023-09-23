@@ -25,11 +25,12 @@ class CalendarManageBloc extends Bloc<CalendarManageEvent, CalendarManageState> 
 
     on<SaveSet>((event, emit) async {
       var completeURL = Uri.http(url, '/addExerciseSet');
-      var response = await http.post(completeURL, body: {'username': event.username, 'reps': event.reps, 'weight': event.weight, 'date': event.date, 'exercise_name': event.exerciseName});
+      var response = await http.post(completeURL, body: {'username': event.username, 'date': event.date, 'exercise_name': event.exerciseName});
+      // var response = await http.post(completeURL, body: {'username': event.username, 'reps': event.reps, 'weight': event.weight, 'date': event.date, 'exercise_name': event.exerciseName});
 
       if (response.statusCode == 200) {
         emit(CalendarManageInitial());
-        print('COMPLETe INSERT');
+        print('COMPLETE INSERT');
       }else{
         print('FAILED INSERT!!');
       }

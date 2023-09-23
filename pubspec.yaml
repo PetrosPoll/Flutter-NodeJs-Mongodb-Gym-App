@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  device_info_plus: ^9.0.2 # Update to a compatible version
   table_calendar: ^3.0.9
   intl: ^0.18.1
 

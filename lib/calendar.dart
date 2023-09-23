@@ -55,106 +55,89 @@ class _CalendarState extends State<Calendar> {
       DateTime date = DateTime.parse(dateString);
         if (selectedEvents[selectedDay] != null) {
             selectedEvents[date]?.add( Event(title: object["exercise_name"]) );
+            // selectedEvents[date]?.add( Event(title: object["exercise_name"], reps: object["reps"], weight: object["weight"]) );
         } else {
           selectedEvents[date] = [ Event(title: object["exercise_name"]) ];
+          // selectedEvents[date] = [ Event(title: object["exercise_name"], reps: object["reps"], weight: object["weight"]) ];
       }
     }
     }
 
-    // Receive data from the state and handle them
+    // This is the state where we send data from an exercise to save it on the database and show it on calendar. 
+    // More specifically the date here are coming from the page where we set an exercise of how many reps and weights
     if (state is CalendarReceiveData) {
       DateTime now = DateTime.now();
       DateTime formattedDateTime = DateTime.utc(now.year, now.month, now.day);
-      String formattedString = formattedDateTime.toUtc().toIso8601String();
+      String formattedDay = formattedDateTime.toUtc().toIso8601String();
 
       // Get the data from the state with the getters
       String exerciseName = state.getExerciseName;
+      // String reps = state.getReps;
+      // String weight = state.getWeight;
       bool isNewEvent = state.getIsNewEvent;
-        if(isNewEvent){
-          selectedEvents[selectedDay] = [
-            Event(title: exerciseName)
-          ];
-          BlocProvider.of<CalendarManageBloc>(context).add(SaveSet(false, 'pollakis.p6@gmail.com', '23', '54', formattedString, exerciseName));
-        }
+
+      if(isNewEvent){
+        selectedEvents[selectedDay] = [
+          Event(title: exerciseName)
+          // Event(title: exerciseName, reps: reps, weight: weight)
+        ];
+        // BlocProvider.of<CalendarManageBloc>(context).add(SaveSet(false, 'pollakis.p6@gmail.com', reps, weight, formattedDay, exerciseName));
+      }
     }
-    return Scaffold(
-    body: Column(
-        children: [
-          TableCalendar(
-            focusedDay: selectedDay,
-            firstDay: DateTime(1990),
-            lastDay: DateTime(2050),
-            calendarFormat: format,
-            onFormatChanged: (CalendarFormat _format) {
-              setState(() {
-                format = _format;
-              });
-            },
-            startingDayOfWeek: StartingDayOfWeek.sunday,
-            daysOfWeekVisible: true,
-
-            //Day Changed
-            onDaySelected: (DateTime selectDay, DateTime focusDay) {
-              setState(() {
-                selectedDay = selectDay;
-                focusedDay = focusDay;
-              });
-            },
-            selectedDayPredicate: (DateTime date) {
-              return isSameDay(selectedDay, date);
-            },
-            eventLoader: _getEventsfromDay,
-          ),
-          ..._getEventsfromDay(selectedDay).map(
-            (Event event) => ListTile(
-              title: Text(
-                event.title,
-              ),
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text("Add Event"),
-            content: TextFormField(
-              controller: _eventController,
-            ),
-            actions: [
-              TextButton(
-                child: Text("Cancel"),
-                onPressed: () => Navigator.pop(context),
-              ),
-              TextButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  if (_eventController.text.isEmpty) {
-
-                  } else {
-                      if (selectedEvents[selectedDay] != null) {
-                        selectedEvents[selectedDay]?.add(
-                          Event(title: _eventController.text),
-                        );
-                      } else {
-                        selectedEvents[selectedDay] = [
-                          Event(title: _eventController.text)
-                        ];
-                      }
-                  }
-                  Navigator.pop(context);
-                  _eventController.clear();
-                  setState((){});
-                  return;
+    return SingleChildScrollView(
+    child: Container(
+      color: Color.fromRGBO(200, 208, 200, 1),
+        child: Column(
+            children: [
+              TableCalendar(
+                focusedDay: selectedDay,
+                firstDay: DateTime(1990),
+                lastDay: DateTime(2050),
+                calendarFormat: format,
+                onFormatChanged: (CalendarFormat _format) {
+                  setState(() {
+                    format = _format;
+                  });
                 },
+                startingDayOfWeek: StartingDayOfWeek.sunday,
+                daysOfWeekVisible: true,
+    
+                //Day Changed
+                onDaySelected: (DateTime selectDay, DateTime focusDay) {
+                  setState(() {
+                    selectedDay = selectDay;
+                    focusedDay = focusDay;
+                  });
+                },
+                selectedDayPredicate: (DateTime date) {
+                  return isSameDay(selectedDay, date);
+                },
+                eventLoader: _getEventsfromDay,
+              ),
+    
+              ..._getEventsfromDay(selectedDay).map(
+                (Event event) => Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blue),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  child: ListTile(
+                    title: Text(
+                      event.title,
+                      // event.title + " - " + event.reps + " - " + event.weight,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
-        ),
-        label: Text("Add Event"),
-        icon: Icon(Icons.add),
-      ),
+    ),
     ); // End scaffold
   }
   );

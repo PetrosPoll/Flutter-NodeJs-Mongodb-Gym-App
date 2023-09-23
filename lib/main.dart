@@ -102,8 +102,10 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () async {
-                var completeURL = Uri.http(url, '/login');
-                var response = await http.post(completeURL, body: {'username': 'pollakis.p6@gmail.com', 'password': '1234'});
+                var completeURL = Uri.parse('$url/login');  // Use Uri.parse() instead of Uri.http()
+                print("-------333333");
+                print(completeURL);
+                var response = await http.post(completeURL, body: {'username': 'root', 'password': '1234'});
 
                 if (response.statusCode == 200) {
                   print('Pass the login credentials');
