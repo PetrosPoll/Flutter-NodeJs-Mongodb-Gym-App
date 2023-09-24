@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'exercise_details.dart';
 import 'exercises_in_workout.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+import 'models/exercise.dart'; // Import the Exercise class
+import 'dart:convert';
 
 class Exercises extends StatefulWidget {
   final VoidCallback? callbackFromCalendar;
@@ -13,6 +17,31 @@ class Exercises extends StatefulWidget {
 
 class _ExercisesState extends State<Exercises> {
   int _selectedIndex = 0; // The initially selected tab index
+  final url = dotenv.env['API_URL'] ?? ''; // Use the URL in your API requests
+  List<Exercise> exerciseList = [];
+
+ @override
+  void initState() {
+    super.initState();
+
+    fetchData(url);
+  }
+
+  Future<void> fetchData(url) async {
+      var completeURL = Uri.parse('$url/exercises');  // Use Uri.parse() instead of Uri.http()
+      var response = await http.get(completeURL);
+
+      if (response.statusCode == 200) {
+        List<dynamic> responseList = json.decode(response.body);
+        setState(() {
+          exerciseList = responseList.map((e) => Exercise.fromJson(e)).toList();
+        });
+      } else {
+        // Handle API request error
+        print('API request failed with status code: ${response.statusCode}');
+      }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -24,36 +53,43 @@ class _ExercisesState extends State<Exercises> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                      child: Padding(
-                                      padding: EdgeInsets.all(16.0),
-                                      child: Text(
-                                        'List of Exercises',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text(
+                        'List of Exercises',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
                   Container(
-                    child: Wrap(
-                      spacing: 16.0, // Spacing between each box
-                      runSpacing: 16.0, // Spacing between each row
-                      children: List.generate(20, (index) {
+                    height: 500,
+                    child:
+                      GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 16.0,
+                        mainAxisSpacing: 16.0,
+                      ),
+                      itemCount: exerciseList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Exercise exercise = exerciseList[index];
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ExerciseDetails(
-                                  exerciseName: 'Exercise ${index + 1}',
+                                  exerciseName: exercise.name,
                                 ),
                               ),
                             );
                           },
                           child: Container(
-                            width: (MediaQuery.of(context).size.width - 48) / 3, // Adjust the width based on the number of items per row
+                            width: 100, // Adjust this value as needed
                             child: Column(
                               children: [
                                 CircleAvatar(
@@ -66,16 +102,16 @@ class _ExercisesState extends State<Exercises> {
                                 ),
                                 SizedBox(height: 8.0),
                                 Text(
-                                  'Exercise ${index + 1}',
+                                  exercise.name,
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ],
                             ),
                           ),
                         );
-                      }),
+                      },
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
