@@ -44,7 +44,7 @@ class CountdownRowWidget extends StatelessWidget {
               ElevatedButton(
                 onPressed: isCountdownStarted ? resetCountdown : startCountdown,
                 child: Text(
-                  isCountdownStarted ? 'Reset' : 'Start',
+                  isCountdownStarted ? 'Stop' : 'Start',
                 ),
               ),
             ],

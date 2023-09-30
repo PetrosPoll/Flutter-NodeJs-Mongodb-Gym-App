@@ -17,8 +17,6 @@ class ExerciseDetails extends StatefulWidget {
 }
 
 class _ExerciseDetailsState extends State<ExerciseDetails> {
-  int reps = 0;
-  double weights = 0.0;
   bool isCountdownStarted = false;
   int countdownDuration = 120;
   int countdownValue = 120;
@@ -79,6 +77,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
         children: [
           Expanded(
             child: TextField(
+              style: TextStyle(color: Colors.white),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 setState(() {
@@ -86,8 +85,9 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                 });
               },
               decoration: InputDecoration(
+                hintText: 'REPS',
                 labelText: 'Reps',
-                labelStyle: TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.grey),
                 fillColor: Colors.black,
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black),
@@ -103,6 +103,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
           SizedBox(width: 16.0),
           Expanded(
             child: TextField(
+              style: TextStyle(color: Colors.white),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 setState(() {
@@ -111,7 +112,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
               },
               decoration: InputDecoration(
                 labelText: 'Weights (kg)',
-                labelStyle: TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.grey),
                 fillColor: Colors.black,
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black),
@@ -175,17 +176,6 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Reps and Weights:',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
               for (int i = 0; i < repsList.length; i++)
                 buildRepsWeightsRow(i),
               SizedBox(height: 16.0),
@@ -233,9 +223,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                           ),
                           TextButton(
                             onPressed: () {
-                              // Perform the desired action
-                              // ...
-                              BlocProvider.of<CalendarManageBloc>(context).add(AddAnEvent('${widget.exerciseName}', true));
+                              BlocProvider.of<CalendarManageBloc>(context).add(AddAnEvent('${widget.exerciseName}', true, repsList, weightsList));
                               Navigator.of(context).pop(); // Close the dialog
                             },
                             child: Text('Confirm'),

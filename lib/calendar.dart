@@ -1,4 +1,4 @@
-import 'event.dart';
+import 'models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,17 +54,15 @@ class _CalendarState extends State<Calendar> {
       String dateString = object["date"];
       DateTime date = DateTime.parse(dateString);
         if (selectedEvents[selectedDay] != null) {
-            selectedEvents[date]?.add( Event(title: object["exercise_name"]) );
-            // selectedEvents[date]?.add( Event(title: object["exercise_name"], reps: object["reps"], weight: object["weight"]) );
+            selectedEvents[date]?.add( Event(title: object["exercise_name"], repsList: object["reps"], weightsList: object["weight"]) );
         } else {
-          selectedEvents[date] = [ Event(title: object["exercise_name"]) ];
-          // selectedEvents[date] = [ Event(title: object["exercise_name"], reps: object["reps"], weight: object["weight"]) ];
+          selectedEvents[date] = [ Event(title: object["exercise_name"], repsList: object["reps"], weightsList: object["weight"]) ];
       }
     }
     }
 
     // This is the state where we send data from an exercise to save it on the database and show it on calendar. 
-    // More specifically the date here are coming from the page where we set an exercise of how many reps and weights
+    // More specifically the date here are coming from the page where we set an exercise of how many reps and weights we want (exercise_details.dart)
     if (state is CalendarReceiveData) {
       DateTime now = DateTime.now();
       DateTime formattedDateTime = DateTime.utc(now.year, now.month, now.day);
@@ -72,16 +70,15 @@ class _CalendarState extends State<Calendar> {
 
       // Get the data from the state with the getters
       String exerciseName = state.getExerciseName;
-      // String reps = state.getReps;
-      // String weight = state.getWeight;
+      List<int> repsList = state.getRepsList;
+      List<double> weightList = state.getWeightsList;
       bool isNewEvent = state.getIsNewEvent;
 
       if(isNewEvent){
         selectedEvents[selectedDay] = [
-          Event(title: exerciseName)
-          // Event(title: exerciseName, reps: reps, weight: weight)
+          Event(title: exerciseName, repsList: repsList, weightsList: weightList),
         ];
-        // BlocProvider.of<CalendarManageBloc>(context).add(SaveSet(false, 'pollakis.p6@gmail.com', reps, weight, formattedDay, exerciseName));
+        BlocProvider.of<CalendarManageBloc>(context).add(SaveSet(false, 'pollakis.p6@gmail.com', repsList, weightList, formattedDay, exerciseName));
       }
     }
     return SingleChildScrollView(

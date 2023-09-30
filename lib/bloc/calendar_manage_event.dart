@@ -13,20 +13,20 @@ class ReceiveListOfSets extends CalendarManageEvent {
 
 class AddAnEvent extends CalendarManageEvent {
   final String exerciseName;
-  // final String reps;
-  // final String weight;
   final bool isNewEvent;
+  List<int> repsList = [];
+  List<double> weightsList = [];
 
-  AddAnEvent(this.exerciseName, this.isNewEvent);
+  AddAnEvent(this.exerciseName, this.isNewEvent, this.repsList, this.weightsList);
 }
 
 class SaveSet extends CalendarManageEvent {
   final bool isNewEvent;
   final String username;
-  final String reps;
-  final String weight;
+  List<int> repsList = [];
+  List<double> weightsList = [];
   final String date;
   final String exerciseName;
 
-  SaveSet(this.isNewEvent, this.username, this.reps, this.weight, this.date, this.exerciseName);
+  SaveSet(this.isNewEvent, this.username, this.repsList, this.weightsList, this.date, this.exerciseName);
 }
