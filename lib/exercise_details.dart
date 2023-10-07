@@ -223,7 +223,10 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                           ),
                           TextButton(
                             onPressed: () {
-                              BlocProvider.of<CalendarManageBloc>(context).add(AddAnEvent('${widget.exerciseName}', true, repsList, weightsList));
+                              DateTime now = DateTime.now();
+                              DateTime formattedDateTime = DateTime.utc(now.year, now.month, now.day);
+                              String formattedDay = formattedDateTime.toUtc().toIso8601String();
+                              BlocProvider.of<CalendarManageBloc>(context).add(SaveSet(false, 'pollakis.p6@gmail.com', repsList, weightsList, formattedDay, '${widget.exerciseName}'));
                               Navigator.of(context).pop(); // Close the dialog
                             },
                             child: Text('Confirm'),

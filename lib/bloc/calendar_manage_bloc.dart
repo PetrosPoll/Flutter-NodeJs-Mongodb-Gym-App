@@ -13,14 +13,9 @@ class CalendarManageBloc extends Bloc<CalendarManageEvent, CalendarManageState> 
  final url = dotenv.env['API_URL'] ?? ''; // Use the URL in your API requests
 
     on<ReceiveListOfSets>((event, emit) async {
-    var completeURL = Uri.http(url, '/receiveSetsList/' + event.username);
+    var completeURL = Uri.parse(url + '/receiveSetsList/' + event.username);
     var response = await http.get(completeURL);
-
     emit(ListOfSetsState(json.decode(response.body)));
-    });
-
-    on<AddAnEvent>((event, emit) {
-      emit(CalendarReceiveData(event.exerciseName, event.isNewEvent, event.repsList, event.weightsList));
     });
 
     on<SaveSet>((event, emit) async {
@@ -28,7 +23,9 @@ class CalendarManageBloc extends Bloc<CalendarManageEvent, CalendarManageState> 
       var response = await http.post(completeURL, body: {'username': event.username, 'reps': jsonEncode(event.repsList), 'weight': jsonEncode(event.weightsList), 'date': event.date, 'exercise_name': event.exerciseName});
 
       if (response.statusCode == 200) {
-        // emit(CalendarManageInitial());
+        var completeURL = Uri.parse(url + '/receiveSetsList/' + event.username);
+        var response = await http.get(completeURL);
+        emit(ListOfSetsState(json.decode(response.body)));
         print('COMPLETE INSERT');
       }else{
         print('FAILED INSERT!!');

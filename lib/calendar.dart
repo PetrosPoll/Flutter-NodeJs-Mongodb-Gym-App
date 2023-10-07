@@ -6,6 +6,7 @@ import 'bloc/calendar_manage_bloc.dart';
 import 'bloc/calendar_manage_event.dart';
 import 'bloc/calendar_manage_state.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
 
 class Calendar extends StatefulWidget {
   @override
@@ -22,6 +23,7 @@ class _CalendarState extends State<Calendar> {
 
   @override
   void initState() {
+    print('Initial state for calendar.dart---');
     selectedEvents = {};
     BlocProvider.of<CalendarManageBloc>(context).add(ReceiveListOfSets('pollakis.p6@gmail.com'));
     super.initState();
@@ -46,41 +48,23 @@ class _CalendarState extends State<Calendar> {
   return BlocBuilder<CalendarManageBloc, CalendarManageState>(
   builder: (context, state) {
     if (state is ListOfSetsState) {
+      print('ListOfSetsState----');
       selectedEvents = {};
       list_of_sets = state.getListOfSets;
 
-    for (int i = 0; i < list_of_sets.length; i++) {
-      var object = list_of_sets[i];
-      String dateString = object["date"];
-      DateTime date = DateTime.parse(dateString);
+      for (int i = 0; i < list_of_sets.length; i++) {
+        var object = list_of_sets[i];
+        String dateString = object["date"];
+        DateTime date = DateTime.parse(dateString);
+
         if (selectedEvents[selectedDay] != null) {
-            selectedEvents[date]?.add( Event(title: object["exercise_name"], repsList: object["reps"], weightsList: object["weight"]) );
+            selectedEvents[date]?.add( Event(title: object["exercise_name"], repsList: List<int>.from(json.decode(object["reps"])), weightsList: List<double>.from(json.decode(object["weight"] )) ));
         } else {
-          selectedEvents[date] = [ Event(title: object["exercise_name"], repsList: object["reps"], weightsList: object["weight"]) ];
+          selectedEvents[date] = [ Event(title: object["exercise_name"], repsList: List<int>.from(json.decode(object["reps"])), weightsList: List<double>.from(json.decode(object["weight"] )) )];
+        }
       }
     }
-    }
 
-    // This is the state where we send data from an exercise to save it on the database and show it on calendar. 
-    // More specifically the date here are coming from the page where we set an exercise of how many reps and weights we want (exercise_details.dart)
-    if (state is CalendarReceiveData) {
-      DateTime now = DateTime.now();
-      DateTime formattedDateTime = DateTime.utc(now.year, now.month, now.day);
-      String formattedDay = formattedDateTime.toUtc().toIso8601String();
-
-      // Get the data from the state with the getters
-      String exerciseName = state.getExerciseName;
-      List<int> repsList = state.getRepsList;
-      List<double> weightList = state.getWeightsList;
-      bool isNewEvent = state.getIsNewEvent;
-
-      if(isNewEvent){
-        selectedEvents[selectedDay] = [
-          Event(title: exerciseName, repsList: repsList, weightsList: weightList),
-        ];
-        BlocProvider.of<CalendarManageBloc>(context).add(SaveSet(false, 'pollakis.p6@gmail.com', repsList, weightList, formattedDay, exerciseName));
-      }
-    }
     return SingleChildScrollView(
     child: Container(
       color: Color.fromRGBO(200, 208, 200, 1),
@@ -119,15 +103,33 @@ class _CalendarState extends State<Calendar> {
                     borderRadius: BorderRadius.circular(5),
                   ),
                   margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: ListTile(
-                    title: Text(
-                      event.title,
-                      // event.title + " - " + event.reps + " - " + event.weight,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
-                      ),
+                    child: ListTile(
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          event.title, // Main title
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 5), // Add some space between the title and reps
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(
+                            event.repsList.length,
+                            (index) => Text(
+                              '${event.repsList[index]} Reps x ${event.weightsList[index]} Kg',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
