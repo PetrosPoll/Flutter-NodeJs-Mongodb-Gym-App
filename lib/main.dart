@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'bloc/calendar_manage_bloc.dart';
-import 'bottom_navigation.dart';
+import 'home_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -109,7 +109,7 @@ class LoginScreen extends StatelessWidget {
                   print('Pass the login credentials');
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => BottomNavigationBarExample()),
+                    MaterialPageRoute(builder: (context) => HomePage()),
                   );
                 } else {
                   // Handle API request error

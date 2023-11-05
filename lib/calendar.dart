@@ -67,10 +67,14 @@ class _CalendarState extends State<Calendar> {
 
     return SingleChildScrollView(
     child: Container(
-      color: Color.fromRGBO(200, 208, 200, 1),
+      color: Colors.grey,
         child: Column(
             children: [
               TableCalendar(
+                calendarStyle: CalendarStyle(
+                  
+                ) ,
+                locale: 'en_US',
                 focusedDay: selectedDay,
                 firstDay: DateTime(1990),
                 lastDay: DateTime(2050),
@@ -112,7 +116,7 @@ class _CalendarState extends State<Calendar> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
                         ),
                         SizedBox(height: 5), // Add some space between the title and reps
@@ -124,7 +128,7 @@ class _CalendarState extends State<Calendar> {
                               '${event.repsList[index]} Reps x ${event.weightsList[index]} Kg',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey,
+                                color: Colors.black,
                               ),
                             ),
                           ),
