@@ -1,16 +1,12 @@
-# my_app
+# Flutter Mobile App DEMO
 
-A new Flutter project.
+This is a demo of Flutter Mobile App for study purposes. 
 
-## Getting Started
+I created this app that shows exercises from a gym workout which you can add your reps and weights, see your logged workouts on a calendar and using timer for rest between sets.
+The main focus it has been in the development and not in the UI.
 
-This project is a starting point for a Flutter application.
+## Tech used
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter / Dart
+- MongoDB
+- NodeJS for the server
